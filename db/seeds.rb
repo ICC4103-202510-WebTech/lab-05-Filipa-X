@@ -11,27 +11,31 @@ Message.destroy_all
 Chat.destroy_all
 User.destroy_all
 
+users = []
 10.times do |i|
-    User.create!(
-        email: "user#{i + 1}@mail.com",
-        first_name: "first_name #{i + 1}",
-        last_name: "last_name #{i + 1}",
-
-    
-    )
+  users << User.create!(
+    email: "user#{i + 1}@mail.com",
+    first_name: "FirstName#{i + 1}",
+    last_name: "LastName#{i + 1}"
+  )
 end
 
-10.times do |i| 
-    Chat.create!(
-        sender_id: rand(1..10),
-        receiver_id: rand(1..10)
-    )
+chats = []
+10.times do
+  sender, receiver = users.sample(2)
+  chats << Chat.create!(
+    sender_id: sender.id,
+    receiver_id: receiver.id
+  )
 end
 
 10.times do |i|
-    Message.create!(
-        chat_id: rand(1..10),
-        user_id: rand(1..10),
-        body: "This is message number #{i + 1}"
-    )
+  chat = chats.sample
+  user_id = [chat.sender_id, chat.receiver_id].sample
+
+  Message.create!(
+    chat_id: chat.id,
+    user_id: user_id,
+    body: "This is message number #{i + 1}"
+  )
 end

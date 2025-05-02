@@ -1,24 +1,39 @@
-<h1>All Messages</h1>
+<h1>Messages</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Chat ID</th>
-      <th>User ID</th>
-      <th>Body</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @messages.each do |message| %>
+<% if @messages.any? %>
+  <table>
+    <thead>
       <tr>
-        <td><%= message.id %></td>
-        <td><%= message.chat_id %></td>
-        <td><%= message.user_id %></td>
-        <td><%= message.body %></td>
-        <td><%= link_to 'Show', message_path(message) %></td>
+        <th>ID</th>
+        <th>Chat</th>
+        <th>Sender</th>
+        <th>Body</th>
+        <th>Timestamp</th>
+        <th>Actions</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% @messages.each do |message| %>
+        <tr>
+          <td><%= message.id %></td>
+          <td>
+            Chat <%= message.chat.id %><br>
+            (<%= message.chat.sender.email %> → <%= message.chat.receiver.email %>)
+          </td>
+          <td><%= message.user.email %></td>
+          <td><%= truncate(message.body, length: 40) %></td>
+          <td><%= message.created_at.strftime("%b %d, %Y %H:%M") %></td>
+          <td><%= link_to 'View Message', message_path(message) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>No messages found.</p>
+<% end %>
+
+<div class="links">
+  <%= link_to 'Create New Message', new_message_path %>
+  <%= link_to 'Back to Chats', chats_path %>
+  <%= link_to 'All Users', users_path %>
+</div>

@@ -1,8 +1,26 @@
-<h1>Message Details</h1>
+<h1>Message ID <%= @message.id %></h1>
 
-<p><strong>ID:</strong> <%= @message.id %></p>
-<p><strong>Chat ID:</strong> <%= @message.chat_id %></p>
-<p><strong>User ID:</strong> <%= @message.user_id %></p>
-<p><strong>Body:</strong> <%= @message.body %></p>
+<p>
+  <strong>Chat:</strong>
+  <%= link_to "Chat ##{@message.chat.id}", chat_path(@message.chat) %><br>
+  (<%= @message.chat.sender.email %> → <%= @message.chat.receiver.email %>)
+</p>
 
-<%= link_to 'Back to Messages', messages_path %>
+<p>
+  <strong>Sender:</strong>
+  <%= @message.user.email %> (<%= @message.user.first_name %> <%= @message.user.last_name %>)
+</p>
+
+<p>
+  <strong>Content:</strong><br>
+  <%= simple_format(@message.body) %>
+</p>
+
+<p>
+  <strong>Sent At:</strong>
+  <%= @message.created_at.strftime("%b %d, %Y %H:%M") %>
+</p>
+
+<div class="links">
+  <%= link_to 'Back to Messages', messages_path %>
+</div>

@@ -1,0 +1,62 @@
+<h1>New Message</h1>
+
+<% if @message.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@message.errors.count, "error") %> prohibited this message from being saved:</h2>
+    <ul>
+      <% @message.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with(model: @message, local: true) do |form| %>
+  <div class="field">
+    <%= form.label :chat_id, "Chat" %>
+    <%= form.collection_select :chat_id, @chats, :id, :id, { include_blank: "Select a chat" }, 
+                              { onchange: "updateUserOptions(this.value)" } %>
+    <p class="hint">Chat #: Sender → Receiver</p>
+    
+    <% @chats.each do |chat| %>
+      <div id="chat-info-<%= chat.id %>" style="display: none;">
+        <small>Between <%= chat.sender.email %> and <%= chat.receiver.email %></small>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="field">
+    <%= form.label :user_id, "From (User)" %>
+    <%= form.collection_select :user_id, @users, :id, :email, { include_blank: "Select a user" } %>
+  </div>
+
+  <div class="field">
+    <%= form.label :body, "Message" %>
+    <%= form.text_area :body %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "Send Message" %>
+  </div>
+<% end %>
+
+<div class="links">
+  <%= link_to 'Back to Chats', chats_path %>
+  <%= link_to 'Back to Users', users_path %>
+</div>
+
+<script>
+  function updateUserOptions(chatId) {
+    // Mostrar información del chat seleccionado
+    document.querySelectorAll('[id^="chat-info-"]').forEach(function(el) {
+      el.style.display = 'none';
+    });
+    
+    if (chatId) {
+      var chatInfo = document.getElementById('chat-info-' + chatId);
+      if (chatInfo) {
+        chatInfo.style.display = 'block';
+      }
+    }
+  }
+</script>

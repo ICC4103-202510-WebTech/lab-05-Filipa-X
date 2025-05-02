@@ -1,7 +1,65 @@
-<h1>Chat Details</h1>
+<h1>Chat</h1>
 
-<p><strong>ID:</strong> <%= @chat.id %></p>
-<p><strong>Sender ID:</strong> <%= @chat.sender_id %></p>
-<p><strong>Receiver ID:</strong> <%= @chat.receiver_id %></p>
+<p>
+  <strong>Sender:</strong>
+  <%= @chat.sender.email %> (<%= @chat.sender.first_name %> <%= @chat.sender.last_name %>)
+</p>
 
-<%= link_to 'Back to Chats', chats_path %>
+<p>
+  <strong>Receiver:</strong>
+  <%= @chat.receiver.email %> (<%= @chat.receiver.first_name %> <%= @chat.receiver.last_name %>)
+</p>
+
+<h2>Messages</h2>
+
+<% if @chat.messages.any? %>
+  <div class="messages">
+    <% @chat.messages.order(created_at: :asc).each do |message| %>
+      <div class="message">
+        <p>
+          <strong><%= message.user.first_name %>:</strong>
+          <%= message.body %>
+          <small><%= message.created_at.strftime("%b %d, %Y %H:%M") %></small>
+        </p>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <p>No messages yet.</p>
+<% end %>
+
+<h3>Send a Message</h3>
+
+<%= form_with(model: [@chat, @message], local: true) do |form| %>
+  <% if @message.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@message.errors.count, "error") %> prohibited this message from being saved:</h2>
+      <ul>
+        <% @message.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form.hidden_field :chat_id, value: @chat.id %>
+  
+  <div class="field">
+    <%= form.label :user_id, "From" %>
+    <%= form.collection_select :user_id, [@chat.sender, @chat.receiver], :id, :email %>
+  </div>
+
+  <div class="field">
+    <%= form.label :body, "Message" %>
+    <%= form.text_area :body %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "Send Message" %>
+  </div>
+<% end %>
+
+<div class="links">
+  <%= link_to 'Back to Chats', chats_path %>
+  <%= link_to 'All Users', users_path %>
+</div>
