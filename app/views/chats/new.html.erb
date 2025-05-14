@@ -1,32 +1,5 @@
 <h1>New Chat</h1>
-
-<% if @chat.errors.any? %>
-  <div id="error_explanation">
-    <h2><%= pluralize(@chat.errors.count, "error") %> prohibited this chat from being saved:</h2>
-    <ul>
-      <% @chat.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-    </ul>
-  </div>
-<% end %>
-
-<%= form_with(model: @chat, local: true) do |form| %>
-  <div class="field">
-    <%= form.label :sender_id, "Sender" %>
-    <%= form.collection_select :sender_id, @users, :id, :email, { include_blank: "Select a sender" } %>
-  </div>
-
-  <div class="field">
-    <%= form.label :receiver_id, "Receiver" %>
-    <%= form.collection_select :receiver_id, @users, :id, :email, { include_blank: "Select a receiver" } %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit "Create Chat" %>
-  </div>
-<% end %>
-
+<%= render 'form', chat: @chat %>
 <div class="links">
   <%= link_to 'Back to Chats', chats_path %>
 </div>

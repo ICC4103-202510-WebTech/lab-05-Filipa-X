@@ -16,7 +16,10 @@
           <td><%= chat.sender.email %></td>
           <td><%= chat.receiver.email %></td>
           <td><%= chat.messages.count %></td>
-          <td><%= link_to 'View Chat', chat %></td>
+          <td>
+            <%= link_to 'View Chat', chat %> |
+            <%= link_to 'Edit', edit_chat_path(chat) %>
+          </td>
         </tr>
       <% end %>
     </tbody>

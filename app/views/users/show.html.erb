@@ -37,6 +37,23 @@
   <p>No received chats.</p>
 <% end %>
 
+<h2>Messages Sent</h2>
+<% if @user.messages.any? %>
+  <ul>
+    <% @user.messages.each do |msg| %>
+      <li>
+        To <%= msg.chat.receiver.email %>:
+        "<%= truncate(msg.body, length: 50) %>"
+        (<%= link_to 'View', message_path(msg) %>)
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>This user hasn't sent any messages.</p>
+<% end %>
+
+<%= link_to 'Edit User', edit_user_path(@user) %>
+
 <div class="links">
   <%= link_to 'Back to Users', users_path %>
   <%= link_to 'Start a New Chat', new_chat_path %>

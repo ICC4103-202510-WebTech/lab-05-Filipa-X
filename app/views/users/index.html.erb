@@ -7,6 +7,7 @@
         <th>Email</th>
         <th>First Name</th>
         <th>Last Name</th>
+        <th>Messages Sent</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -16,9 +17,14 @@
           <td><%= user.email %></td>
           <td><%= user.first_name %></td>
           <td><%= user.last_name %></td>
-          <td><%= link_to 'Show', user %></td>
+          <td><%= user.messages.count %></td> <!-- NUEVO -->
+          <td>
+            <%= link_to 'Show', user %> |
+            <%= link_to 'Edit', edit_user_path(user) %> <!-- NUEVO -->
+          </td>
         </tr>
       <% end %>
+
     </tbody>
   </table>
 <% else %>
