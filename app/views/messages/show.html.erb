@@ -25,6 +25,10 @@
   <%= link_to 'Back to Messages', messages_path %>
 </div>
 
-<p>
-  <%= link_to 'Edit Message', edit_message_path(@message) %>
-</p>
+<% if can? :edit, @message %>
+  <p><%= link_to 'Edit Message', edit_message_path(@message) %></p>
+<% end %>
+
+<% if can? :destroy, @message %>
+  <p><%= link_to 'Delete Message', message_path(@message), method: :delete, data: { confirm: "Are you sure?" } %></p>
+<% end %>

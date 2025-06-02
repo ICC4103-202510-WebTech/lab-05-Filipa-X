@@ -1,33 +1,31 @@
 class MessagesController < ApplicationController
-  def new
-    @message = Message.new
-    @chats = Chat.all
-    @users = User.all
-  end
-  
+  before_action :authenticate_user!
+  load_and_authorize_resource
+
   def index
-    @messages = Message.includes(:user, :chat).order(created_at: :desc)
+    @messages = @messages.includes(:user, :chat).order(created_at: :desc)
   end
 
   def show
-    @message = Message.find(params[:id])
+    # @message 
   end
-  
+
+  def new
+    @chats = Chat.all
+    @users = User.all
+  end
+
   def create
     if params[:chat_id]
       @chat = Chat.find(params[:chat_id])
-      @message = @chat.messages.new(message_params)
-      
-      if @message.save
-        redirect_to chat_path(@chat), notice: 'Message was successfully sent.'
-      else
-        render 'chats/show', status: :unprocessable_entity
-      end
+      @message.chat = @chat
+    end
+
+    if @message.save
+      redirect_to chat_path(@message.chat), notice: 'Message was successfully sent.'
     else
-      @message = Message.new(message_params)
-      
-      if @message.save
-        redirect_to chat_path(@message.chat), notice: 'Message was successfully sent.'
+      if params[:chat_id]
+        render 'chats/show', status: :unprocessable_entity
       else
         @chats = Chat.all
         @users = User.all
@@ -36,25 +34,23 @@ class MessagesController < ApplicationController
     end
   end
 
-def edit
-  @message = Message.find(params[:id])
-  @chats = Chat.all
-  @users = User.all
-end
-
-def update
-  @message = Message.find(params[:id])
-  if @message.update(message_params)
-    redirect_to @message, notice: 'Message was successfully updated.'
-  else
+  def edit
     @chats = Chat.all
     @users = User.all
-    render :edit, status: :unprocessable_entity
   end
-end
+
+  def update
+    if @message.update(message_params)
+      redirect_to @message, notice: 'Message was successfully updated.'
+    else
+      @chats = Chat.all
+      @users = User.all
+      render :edit, status: :unprocessable_entity
+    end
+  end
 
   private
-  
+
   def message_params
     params.require(:message).permit(:body, :user_id, :chat_id)
   end
